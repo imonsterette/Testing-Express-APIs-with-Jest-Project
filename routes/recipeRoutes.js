@@ -1,6 +1,8 @@
 const router = require('express').Router();
+const c = require('../controllers/recipeController');
 
-// placeholder; we’ll implement real handlers in the next phase
-router.get('/', (req, res) => res.json([]));
+router.get('/', c.list);
+router.get('/:id', c.get);
+router.post('/', c.create);
 
 module.exports = router;
