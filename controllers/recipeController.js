@@ -45,4 +45,34 @@ function create(req, res) {
   res.status(201).json(newRec);
 }
 
-module.exports = { list, get, create };
+// PUT /api/recipes/:id
+function update(req, res) {
+  const id = Number(req.params.id);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+
+  const { ok, errors } = validateRecipe(req.body);
+  if (!ok) return res.status(400).json({ error: 'Validation failed', details: errors });
+
+  const existing = store.byId(id);
+  if (!existing) return res.status(404).json({ error: 'Recipe not found' });
+
+  const updated = store.update(id, {
+    name: req.body.name.trim(),
+    ingredients: req.body.ingredients,
+    instructions: req.body.instructions.trim(),
+  });
+  res.status(200).json(updated);
+}
+
+// DELETE /api/recipes/:id
+function remove(req, res) {
+  const id = Number(req.params.id);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+
+  const ok = store.remove(id);
+  if (!ok) return res.status(404).json({ error: 'Recipe not found' });
+  // 204 No Content by convention on successful deletion
+  res.status(204).send();
+}
+
+module.exports = { list, get, create, update, remove };
