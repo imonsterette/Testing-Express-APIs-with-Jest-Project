@@ -3,7 +3,11 @@ const store = require('../data');
 function validateRecipe(data) {
   const errors = {};
   if (!data || typeof data !== 'object') data = {};
-  if (!data.name || typeof data.name !== 'string' || data.name.trim().length < 3) {
+  if (
+    !data.name ||
+    typeof data.name !== 'string' ||
+    data.name.trim().length < 3
+  ) {
     errors.name = 'Recipe name is required and must be at least 3 characters';
   }
   if (!Array.isArray(data.ingredients) || data.ingredients.length === 0) {
@@ -14,7 +18,8 @@ function validateRecipe(data) {
     typeof data.instructions !== 'string' ||
     data.instructions.trim().length < 10
   ) {
-    errors.instructions = 'Instructions are required and must be at least 10 characters';
+    errors.instructions =
+      'Instructions are required and must be at least 10 characters';
   }
   return { ok: Object.keys(errors).length === 0, errors };
 }
@@ -27,7 +32,8 @@ function list(req, res) {
 // GET /api/recipes/:id
 function get(req, res) {
   const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+  if (!Number.isFinite(id))
+    return res.status(400).json({ error: 'Invalid id' });
   const rec = store.byId(id);
   if (!rec) return res.status(404).json({ error: 'Recipe not found' });
   res.status(200).json(rec);
@@ -36,11 +42,14 @@ function get(req, res) {
 // POST /api/recipes
 function create(req, res) {
   const { ok, errors } = validateRecipe(req.body);
-  if (!ok) return res.status(400).json({ error: 'Validation failed', details: errors });
+  if (!ok)
+    return res
+      .status(400)
+      .json({ error: 'Validation failed', details: errors });
   const newRec = store.create({
     name: req.body.name.trim(),
     ingredients: req.body.ingredients,
-    instructions: req.body.instructions.trim(),
+    instructions: req.body.instructions.trim()
   });
   res.status(201).json(newRec);
 }
@@ -48,10 +57,14 @@ function create(req, res) {
 // PUT /api/recipes/:id
 function update(req, res) {
   const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+  if (!Number.isFinite(id))
+    return res.status(400).json({ error: 'Invalid id' });
 
   const { ok, errors } = validateRecipe(req.body);
-  if (!ok) return res.status(400).json({ error: 'Validation failed', details: errors });
+  if (!ok)
+    return res
+      .status(400)
+      .json({ error: 'Validation failed', details: errors });
 
   const existing = store.byId(id);
   if (!existing) return res.status(404).json({ error: 'Recipe not found' });
@@ -59,7 +72,7 @@ function update(req, res) {
   const updated = store.update(id, {
     name: req.body.name.trim(),
     ingredients: req.body.ingredients,
-    instructions: req.body.instructions.trim(),
+    instructions: req.body.instructions.trim()
   });
   res.status(200).json(updated);
 }
@@ -67,7 +80,8 @@ function update(req, res) {
 // DELETE /api/recipes/:id
 function remove(req, res) {
   const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+  if (!Number.isFinite(id))
+    return res.status(400).json({ error: 'Invalid id' });
 
   const ok = store.remove(id);
   if (!ok) return res.status(404).json({ error: 'Recipe not found' });

@@ -39,7 +39,7 @@ describe('POST /api/recipes', () => {
     const payload = {
       name: 'Test Pancakes',
       ingredients: ['flour', 'eggs', 'milk'],
-      instructions: 'Mix ingredients and cook on griddle until golden brown.',
+      instructions: 'Mix ingredients and cook on griddle until golden brown.'
     };
     const res = await request(app).post('/api/recipes').send(payload);
     expect(res.statusCode).toBe(201);
@@ -52,7 +52,7 @@ describe('POST /api/recipes', () => {
       .post('/api/recipes')
       .send({
         ingredients: ['x'],
-        instructions: 'Long enough instructions.',
+        instructions: 'Long enough instructions.'
       });
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('error', 'Validation failed');
@@ -63,7 +63,7 @@ describe('POST /api/recipes', () => {
     const res = await request(app).post('/api/recipes').send({
       name: 'Valid Name',
       ingredients: [],
-      instructions: 'Long enough instructions.',
+      instructions: 'Long enough instructions.'
     });
     expect(res.statusCode).toBe(400);
     expect(res.body.details).toHaveProperty('ingredients');
@@ -75,7 +75,7 @@ describe('POST /api/recipes', () => {
       .send({
         name: 'Valid Name',
         ingredients: ['x'],
-        instructions: 'short',
+        instructions: 'short'
       });
     expect(res.statusCode).toBe(400);
     expect(res.body.details).toHaveProperty('instructions');
@@ -96,7 +96,7 @@ describe('PUT /api/recipes/:id', () => {
     const payload = {
       name: 'Updated Name',
       ingredients: ['a', 'b', 'c'],
-      instructions: 'These are sufficiently long instructions.',
+      instructions: 'These are sufficiently long instructions.'
     };
     const res = await request(app).put('/api/recipes/1').send(payload);
     expect(res.statusCode).toBe(200);
@@ -107,7 +107,7 @@ describe('PUT /api/recipes/:id', () => {
     const payload = {
       name: 'Updated Name',
       ingredients: ['a'],
-      instructions: 'Long enough instructions.',
+      instructions: 'Long enough instructions.'
     };
     const res = await request(app).put('/api/recipes/999').send(payload);
     expect(res.statusCode).toBe(404);
@@ -118,7 +118,7 @@ describe('PUT /api/recipes/:id', () => {
     const payload = {
       name: 'Updated Name',
       ingredients: ['a'],
-      instructions: 'Long enough instructions.',
+      instructions: 'Long enough instructions.'
     };
     const res = await request(app).put('/api/recipes/abc').send(payload);
     expect(res.statusCode).toBe(400);
@@ -129,7 +129,7 @@ describe('PUT /api/recipes/:id', () => {
     const payload = {
       name: 'x', // too short
       ingredients: [], // invalid
-      instructions: 'short', // too short
+      instructions: 'short' // too short
     };
     const res = await request(app).put('/api/recipes/1').send(payload);
     expect(res.statusCode).toBe(400);

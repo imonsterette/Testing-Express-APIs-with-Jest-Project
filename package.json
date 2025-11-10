@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "check": "npm run lint && npm test",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -24,7 +28,14 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jest": "^29.0.1",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
+    "prettier": "^3.6.2",
     "supertest": "^7.1.4"
   }
 }
