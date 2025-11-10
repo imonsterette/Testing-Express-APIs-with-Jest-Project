@@ -1,17 +1,100 @@
 const request = require('supertest');
 const app = require('../app');
+const store = require('../data');
 
-describe('Health & 404', () => {
-  it('GET / -> 200 with a message', async () => {
-    const res = await request(app).get('/');
+// reset in-memory DB before each test to keep them independent
+beforeEach(() => store.__reset());
+
+describe('GET /api/recipes', () => {
+  it('200 -> returns an array of recipes', async () => {
+    const res = await request(app).get('/api/recipes');
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('message', 'Recipe API is running!');
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThan(0);
+  });
+});
+
+describe('GET /api/recipes/:id', () => {
+  it('200 -> returns by id', async () => {
+    const res = await request(app).get('/api/recipes/1');
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('id', 1);
   });
 
-  it('GET /api/nope -> 404 with {error}', async () => {
+  it('404 -> not found for a missing id', async () => {
+    const res = await request(app).get('/api/recipes/999');
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'Recipe not found');
+  });
+
+  it('400 -> invalid id (non-numeric)', async () => {
+    const res = await request(app).get('/api/recipes/not-a-number');
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Invalid id');
+  });
+});
+
+describe('POST /api/recipes', () => {
+  it('201 -> creates a recipe when valid', async () => {
+    const payload = {
+      name: 'Test Pancakes',
+      ingredients: ['flour', 'eggs', 'milk'],
+      instructions: 'Mix ingredients and cook on griddle until golden brown.',
+    };
+    const res = await request(app).post('/api/recipes').send(payload);
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body.name).toBe(payload.name);
+  });
+
+  it('400 -> missing name', async () => {
+    const res = await request(app)
+      .post('/api/recipes')
+      .send({
+        ingredients: ['x'],
+        instructions: 'Long enough instructions.',
+      });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Validation failed');
+    expect(res.body.details).toHaveProperty('name');
+  });
+
+  it('400 -> empty ingredients', async () => {
+    const res = await request(app).post('/api/recipes').send({
+      name: 'Valid Name',
+      ingredients: [],
+      instructions: 'Long enough instructions.',
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.body.details).toHaveProperty('ingredients');
+  });
+
+  it('400 -> short instructions', async () => {
+    const res = await request(app)
+      .post('/api/recipes')
+      .send({
+        name: 'Valid Name',
+        ingredients: ['x'],
+        instructions: 'short',
+      });
+    expect(res.statusCode).toBe(400);
+    expect(res.body.details).toHaveProperty('instructions');
+  });
+
+  it('400 -> invalid JSON (caught by error middleware)', async () => {
+    const res = await request(app)
+      .post('/api/recipes')
+      .set('Content-Type', 'application/json')
+      .send('{"bad":'); // malformed JSON
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Invalid JSON');
+  });
+});
+
+describe('Unknown routes', () => {
+  it('GET /api/nope -> 404', async () => {
     const res = await request(app).get('/api/nope');
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty('error', 'Not found');
   });
 });
-
