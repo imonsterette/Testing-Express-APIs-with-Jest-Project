@@ -91,6 +91,77 @@ describe('POST /api/recipes', () => {
   });
 });
 
+describe('PUT /api/recipes/:id', () => {
+  it('200 -> updates when valid', async () => {
+    const payload = {
+      name: 'Updated Name',
+      ingredients: ['a', 'b', 'c'],
+      instructions: 'These are sufficiently long instructions.',
+    };
+    const res = await request(app).put('/api/recipes/1').send(payload);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ id: 1, name: 'Updated Name' });
+  });
+
+  it('404 -> not found when id missing', async () => {
+    const payload = {
+      name: 'Updated Name',
+      ingredients: ['a'],
+      instructions: 'Long enough instructions.',
+    };
+    const res = await request(app).put('/api/recipes/999').send(payload);
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'Recipe not found');
+  });
+
+  it('400 -> invalid id', async () => {
+    const payload = {
+      name: 'Updated Name',
+      ingredients: ['a'],
+      instructions: 'Long enough instructions.',
+    };
+    const res = await request(app).put('/api/recipes/abc').send(payload);
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Invalid id');
+  });
+
+  it('400 -> validation fails', async () => {
+    const payload = {
+      name: 'x', // too short
+      ingredients: [], // invalid
+      instructions: 'short', // too short
+    };
+    const res = await request(app).put('/api/recipes/1').send(payload);
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Validation failed');
+    expect(res.body.details).toHaveProperty('name');
+    expect(res.body.details).toHaveProperty('ingredients');
+    expect(res.body.details).toHaveProperty('instructions');
+  });
+});
+
+describe('DELETE /api/recipes/:id', () => {
+  it('204 -> deletes existing', async () => {
+    const res = await request(app).delete('/api/recipes/1');
+    expect(res.statusCode).toBe(204);
+    // Confirm it’s gone
+    const check = await request(app).get('/api/recipes/1');
+    expect(check.statusCode).toBe(404);
+  });
+
+  it('404 -> not found for missing id', async () => {
+    const res = await request(app).delete('/api/recipes/999');
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'Recipe not found');
+  });
+
+  it('400 -> invalid id', async () => {
+    const res = await request(app).delete('/api/recipes/abc');
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Invalid id');
+  });
+});
+
 describe('Unknown routes', () => {
   it('GET /api/nope -> 404', async () => {
     const res = await request(app).get('/api/nope');
