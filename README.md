@@ -45,3 +45,5 @@ tests/            # Jest test files
 ## Notes
 - Invalid JSON returns 400 via 4-arg error middleware.
 - 400 = bad input; 404 = not found — consistent semantics.
+
+![CI](https://github.com/imonsterette/Testing-Express-APIs-with-Jest-Project/actions/workflows/ci.yml/badge.svg)
