@@ -1,15 +1,24 @@
-# Testing Express APIs with Jest — Recipe API
+# Testing Express APIs with Jest Project — Recipe API
 
 ![CI](https://github.com/imonsterette/Testing-Express-APIs-with-Jest-Project/actions/workflows/ci.yml/badge.svg)
 
-A minimal **Express** API with full tests (**Jest + Supertest**), clean structure, and **pre-commit hygiene** (ESLint + Prettier + Husky). Designed to meet the GA rubric: modular routes/controllers, tested success + error paths, consistent status codes.
+A minimal **Express** API with full tests (**Jest + Supertest**), clean structure, and **pre-commit hygiene** (ESLint + Prettier + Husky).
+This is a backend API that exposes `/api/recipes` endpoints.  
+It supports listing recipes, retrieving single recipes by id, creating new recipes, updating recipes, and deleting them.  
+All behavior is covered by automated tests (Jest + Supertest) for both success & error cases.
 
-## Quickstart
+## Getting Started
 
 ```bash
-npm install
-npm test        # run tests
-npm start       # start server on :3000
+npm install        # install dependencies
+npm test           # run full test suite
+npm start          # start server on :3000
+```
+
+Then you can interact with the API using curl:
+
+```bash
+curl http://localhost:3000/api/recipes
 ```
 
 ## API Contract
@@ -72,3 +81,18 @@ eslint.config.cjs # ESLint v9 flat config
 - `404` = not found
 - app/server split keeps test harness fast
 - data store exposes `__reset()` so each test runs independent
+
+## Technologies Used
+
+- JavaScript (Node.js)
+- Express
+- Jest
+- Supertest
+- ESLint v9 (flat config)
+- Prettier
+- Husky (pre-commit)
+- GitHub Actions (CI)
+
+## Attributions
+
+No external assets that require attribution.
