@@ -1,0 +1,30 @@
+{
+  "name": "testing-express-apis-with-jest-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imonsterette/Testing-Express-APIs-with-Jest-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/imonsterette/Testing-Express-APIs-with-Jest-Project/issues"
+  },
+  "homepage": "https://github.com/imonsterette/Testing-Express-APIs-with-Jest-Project#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
+}
