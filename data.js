@@ -32,6 +32,19 @@ module.exports = {
     rows.push(rec);
     return rec;
   },
+  update: (id, { name, ingredients, instructions }) => {
+    const idx = rows.findIndex((r) => r.id === id);
+    if (idx === -1) return null;
+    const updated = { ...rows[idx], name, ingredients, instructions };
+    rows[idx] = updated;
+    return updated;
+  },
+  remove: (id) => {
+    const idx = rows.findIndex((r) => r.id === id);
+    if (idx === -1) return false;
+    rows.splice(idx, 1);
+    return true;
+  },
   __reset: () => {
     rows = JSON.parse(JSON.stringify(initial));
     nextId = initial.length + 1;
